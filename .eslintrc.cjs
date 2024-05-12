@@ -14,5 +14,10 @@ module.exports = {
       'warn',
       { allowConstantExport: true },
     ],
+    "react/jsx-no-target-blank": 0,
+    'semi': ['error', 'always', { 'omitLastInOneLineBlock': false }],
+    'comma-dangle': ['error', 'never'],
+    quotes: ['error', 'single'],
+    'react/prop-types': [0],
   },
 }
