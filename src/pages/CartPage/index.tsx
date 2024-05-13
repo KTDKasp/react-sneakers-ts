@@ -4,16 +4,18 @@ import { Link } from 'react-router-dom';
 import { Card } from '../../components/Card';
 import { EmptyBlock } from '../../components/EmptyBlock';
 
+import { IProduct } from '../../interfaces/product.interface';
+import { IOrders } from '../../interfaces/orders.inteface';
 import './CartPage.css';
 
 export const CartPage = () => {
-	const [orders, setOrders] = React.useState([]);
+	const [orders, setOrders] = React.useState<IProduct[]>([]);
 
 	const onClickCancel = async () => {
 		const res = confirm('Вы действительно хотите удалить заказы?');
 		if (res) {
       try {
-        const { data } = await axios.patch('https://6d35450ae5876ee3.mokky.dev/orders', [])
+        const { data } = await axios.patch<IOrders>('https://6d35450ae5876ee3.mokky.dev/orders', []);
         setOrders([]);
         return data;
       } catch (error) {
@@ -25,7 +27,7 @@ export const CartPage = () => {
 	React.useEffect(() => {
 		async function fetchOrders() {
 			try {
-				const { data } = await axios.get(
+				const { data } = await axios.get<IOrders[]>(
 					'https://6d35450ae5876ee3.mokky.dev/orders'
 				);
 				setOrders(data.map((obj) => obj.items).flat());
@@ -64,12 +66,7 @@ export const CartPage = () => {
 						))}
 					</div>
 					<button
-						className="button_green drawer__button_green"
-						style={{
-							marginTop: 20,
-							backgroundColor: '#f01a21',
-							maxWidth: 'fit-content',
-						}}
+						className="red_delete button_green drawer__button_green"
             onClick={onClickCancel}
 					>
 						Удалить все заказы

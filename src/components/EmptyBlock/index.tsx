@@ -1,12 +1,8 @@
 import { Link } from 'react-router-dom';
 
-import './EmptyBlock.css';
+import { EmptyBlockProps } from './EmptyBlock.props';
 
-export interface EmptyBlockProps {
-	title: string;
-	description: string;
-	image: string;
-}
+import './EmptyBlock.css';
 
 export const EmptyBlock: React.FC<EmptyBlockProps> = ({ title, description, image }) => {
 	return (

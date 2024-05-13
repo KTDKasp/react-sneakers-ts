@@ -3,8 +3,9 @@ import React from 'react';
 import AppContext from '../../context';
 
 import './Card.css';
+import { ICardProps } from './Card.props';
 
-export const Card = ({
+export const Card: React.FC<ICardProps> = ({
 	id,
 	imageUrl,
 	price,
@@ -18,12 +19,16 @@ export const Card = ({
 	const { isItemAdded } = React.useContext(AppContext);
 
 	const onClickAddBtn = () => {
-		onClickAdd({ id, imageUrl, price, title, isFavorite });
+		if (onClickAdd) {
+			onClickAdd({ id, imageUrl, price, title, isFavorite });
+		}
 	};
 
 	const onClickFavoriteBtn = () => {
 		setIsFavoriteCard(!isFavoriteCard);
-		onClickFavorite({ id, imageUrl, price, title, isFavorite });
+		if (onClickFavorite) {
+			onClickFavorite({ id, imageUrl, price, title, isFavorite });
+		}
 	};
 
 	return (
@@ -49,7 +54,7 @@ export const Card = ({
 					<img
 						onClick={() => onClickAddBtn()}
 						className="card__add"
-						src={isItemAdded(id) ? '/svg/checked.svg' : '/svg/plus.svg'}
+						src={isItemAdded && isItemAdded(id) ? '/svg/checked.svg' : '/svg/plus.svg'}
 						alt="Plus"
 					/>
 				)}

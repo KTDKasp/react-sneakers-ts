@@ -7,8 +7,8 @@ import AppContext from '../context';
 export const MainLayout = () => {
   const { cartItems, drawerOpen, setDrawerOpen } = React.useContext(AppContext);
 
-  const [totalPrice, setTotalPrice] = React.useState(0);
-  const [salePrice, setSalePrice] = React.useState(0);
+  const [totalPrice, setTotalPrice] = React.useState<number>(0);
+  const [salePrice, setSalePrice] = React.useState<number>(0);
 
   React.useEffect(() => {
     setTotalPrice(() =>

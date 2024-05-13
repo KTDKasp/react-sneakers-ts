@@ -1,6 +1,8 @@
+import { ICartItemProps } from './CartItem.props';
+
 import './CartItem.css';
 
-export const CartItem = ({ title, price, imageUrl, onRemove }) => {
+export const CartItem: React.FC<ICartItemProps> = ({ title, price, imageUrl, onRemove }) => {
 	return (
 		<div className="drawer-cart__item">
 			<img src={imageUrl} alt="Sneaker" />

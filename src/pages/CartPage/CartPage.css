@@ -13,3 +13,13 @@
   border-radius: 8px;
   transform: rotate(180deg);
 }
+
+.red_delete {
+  margin-top: 20px;
+  background-color: rgb(240, 26, 31) !important;
+  max-width: fit-content;
+}
+
+.red_delete:hover {
+  background-color: #d11c22 !important;
+}

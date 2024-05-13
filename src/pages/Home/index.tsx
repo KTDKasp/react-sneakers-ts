@@ -2,21 +2,27 @@ import React from 'react';
 import axios from 'axios';
 import debounce from 'lodash.debounce';
 
-import { CardList } from '../../components/CardList';
 import AppContext from '../../context';
+import { CardList } from '../../components/CardList';
+import { IProduct } from '../../interfaces/product.interface';
 
 import './Home.css';
 
-export const Home = () => {
-	const [sortType, setSortType] = React.useState('title');
-	const [searchValue, setSearchValue] = React.useState('');
+interface ISearchParams {
+	sortBy: string;
+	title?: string;
+}
 
-  const { items, setItems, onAddToFavotites, onAddToCart } = React.useContext(AppContext);
+export const Home = () => {
+	const [sortType, setSortType] = React.useState<string>('title');
+	const [searchValue, setSearchValue] = React.useState<string>('');
+
+	const { items, setItems, onAddToFavotites, onAddToCart } =
+		React.useContext(AppContext);
 
 	const fetchData = React.useCallback(async () => {
-		const params = {
-			sortBy: sortType,
-			title: ''
+		const params: ISearchParams = {
+			sortBy: sortType
 		};
 
 		if (searchValue) {
@@ -25,18 +31,20 @@ export const Home = () => {
 
 		// #TODO: сделать скелетон не при каждом обновлении
 		try {
-			const { data } = await axios.get(
+			const { data } = await axios.get<IProduct[]>(
 				'https://6d35450ae5876ee3.mokky.dev/items',
 				{
 					params
 				}
 			);
-			setItems(data);
+			if (setItems) {
+				setItems(data);
+			}
 		} catch (error) {
 			console.log(`Hey, you have ${error}`);
 		}
 	}, [searchValue, sortType]);
-	
+
 	React.useEffect(() => {
 		async function onMount() {
 			await fetchData();
@@ -44,7 +52,7 @@ export const Home = () => {
 		onMount();
 	}, [fetchData]);
 
-	const onChangeSelect = debounce((event) => {
+	const onChangeSelect = debounce((event: React.ChangeEvent<HTMLSelectElement>) => {
 		setSortType(event.target.value);
 	}, 250);
 
@@ -72,21 +80,23 @@ export const Home = () => {
 							value={searchValue}
 							onChange={(event) => onChangeSearchInput(event)}
 						/>
-						{
-							searchValue && (
-								<img
-									onClick={() => setSearchValue('')}
-									className="search__clear"
-									src="/svg/close.svg"
-									alt="Clear"
-								/>
-							)
-						}
+						{searchValue && (
+							<img
+								onClick={() => setSearchValue('')}
+								className="search__clear"
+								src="/svg/close.svg"
+								alt="Clear"
+							/>
+						)}
 					</div>
 				</div>
 			</div>
 			{
-				<CardList items={items} onAddToCart={onAddToCart} onAddToFavotites={onAddToFavotites}/>
+				<CardList
+					items={items}
+					onAddToCart={onAddToCart}
+					onAddToFavotites={onAddToFavotites}
+				/>
 			}
 		</div>
 	);

@@ -3,8 +3,9 @@ import AppContext from '../../context';
 import { Card } from '../Card';
 
 import './CardList.css';
+import { ICardListProps } from './CardList.props';
 
-export const CardList = ({ items, onAddToCart, onAddToFavotites }) => {
+export const CardList: React.FC<ICardListProps> = ({ items, onAddToCart, onAddToFavotites }) => {
   const { animationParent, favoriteItems } = React.useContext(AppContext);
 
   return (
@@ -16,7 +17,7 @@ export const CardList = ({ items, onAddToCart, onAddToFavotites }) => {
           price={item.price}
           title={item.title}
           imageUrl={item.imageUrl}
-          isFavorite={favoriteItems.some((obj) => Number(obj.itemId) === Number(item.id))}
+          isFavorite={favoriteItems?.some((obj) => Number(obj.itemId) === Number(item.id))}
           onClickAdd={(obj) => onAddToCart(obj)}
           onClickFavorite={(obj) => onAddToFavotites(obj)}
         />

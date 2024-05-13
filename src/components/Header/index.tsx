@@ -1,8 +1,10 @@
 import { Link } from 'react-router-dom';
 
+import { IHeaderProps } from './Header.props';
+
 import './Header.css';
 
-export const Header = (props) => {
+export const Header: React.FC<IHeaderProps> = (props) => {
   return (
     <header className="header">
       <Link to="/">

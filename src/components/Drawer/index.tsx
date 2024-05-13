@@ -8,20 +8,24 @@ import { Info } from '../Info';
 import AppContext from '../../context';
 
 import './Drawer.css';
+import { IOrders } from '../../interfaces/orders.inteface';
+import { IProduct } from '../../interfaces/product.interface';
+import { IDrawerProps } from './Drawer.props';
 
-export const Drawer = (props) => {
+export const Drawer: React.FC<IDrawerProps> = (props) => {
   const { animationParent, cartItems, setCartItems } =
     React.useContext(AppContext);
-  const [isOrderCompleted, setIsOrderCompleted] = React.useState(false);
-	const [orderId, setOrderId] = React.useState(0);
 
-  const onRemoveItem = (obj) => {
+  const [isOrderCompleted, setIsOrderCompleted] = React.useState<boolean>(false);
+	const [orderId, setOrderId] = React.useState<number>(0);
+
+  const onRemoveItem = (obj: IProduct) => {
     setCartItems((prev) => prev.filter((item) => item.id !== obj.id));
   };
 
   const createOrder = React.useCallback(async () => {
     try {
-      const { data } = await axios.post(
+      const { data } = await axios.post<IOrders>(
         'https://6d35450ae5876ee3.mokky.dev/orders',
         {
           items: cartItems,
@@ -57,7 +61,6 @@ export const Drawer = (props) => {
               {cartItems.map((obj) => (
                 <CartItem
                   key={obj.id}
-                  id={obj.id}
                   title={obj.title}
                   price={obj.price}
                   imageUrl={obj.imageUrl}

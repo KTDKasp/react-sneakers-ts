@@ -8,7 +8,7 @@ import { Home } from './pages/Home';
 import { Favorites } from './pages/Favorites';
 import { CartPage } from './pages/CartPage';
 import { IProduct } from './interfaces/product.interface';
-import AppContext from './context';
+import AppContext, { AppContextType } from './context';
 
 import './app.css';
 
@@ -72,7 +72,7 @@ function App() {
 		return cartItems.some((obj) => Number(obj.id) === Number(id));
 	};
 
-	const context = {
+	const context: AppContextType = {
 		items,
 		animationParent, 
 		cartItems, 
