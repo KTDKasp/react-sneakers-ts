@@ -53,7 +53,6 @@ export const CartPage = () => {
 						</Link>
 						<h2 className="content__h2">Мои покупки</h2>
 					</div>
-					{console.log(orders)}
 					<div className="card-list">
 						{orders.map((item, index) => (
 							<Card

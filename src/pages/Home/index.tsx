@@ -5,6 +5,8 @@ import debounce from 'lodash.debounce';
 import AppContext from '../../context';
 import { CardList } from '../../components/CardList';
 import { IProduct } from '../../interfaces/product.interface';
+import { addToCart } from '../../redux/slices/cartSlice';
+import { useAppDispatch } from '../../redux/store';
 
 import './Home.css';
 
@@ -16,9 +18,8 @@ interface ISearchParams {
 export const Home = () => {
 	const [sortType, setSortType] = React.useState<string>('title');
 	const [searchValue, setSearchValue] = React.useState<string>('');
-
-	const { items, setItems, onAddToFavotites, onAddToCart } =
-		React.useContext(AppContext);
+	const { items, setItems, onAddToFavotites } = React.useContext(AppContext);
+	const dispatch = useAppDispatch();
 
 	const fetchData = React.useCallback(async () => {
 		const params: ISearchParams = {
@@ -94,7 +95,7 @@ export const Home = () => {
 			{
 				<CardList
 					items={items}
-					onAddToCart={onAddToCart}
+					onAddToCart={(obj) => dispatch(addToCart(obj))}
 					onAddToFavotites={onAddToFavotites}
 				/>
 			}

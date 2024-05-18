@@ -1,27 +1,26 @@
 import React from 'react';
 import axios from 'axios';
 
-import arrowClose from '/svg/arrow-next-drawer.svg';
-
 import { CartItem } from '../CartItem';
 import { Info } from '../Info';
 import AppContext from '../../context';
 
-import './Drawer.css';
 import { IOrders } from '../../interfaces/orders.inteface';
-import { IProduct } from '../../interfaces/product.interface';
 import { IDrawerProps } from './Drawer.props';
 
+import arrowClose from '/svg/arrow-next-drawer.svg';
+import './Drawer.css';
+import { useSelector } from 'react-redux';
+import { RootState, useAppDispatch } from '../../redux/store';
+import { clearCart, removeFromCart } from '../../redux/slices/cartSlice';
+
 export const Drawer: React.FC<IDrawerProps> = (props) => {
-  const { animationParent, cartItems, setCartItems } =
-    React.useContext(AppContext);
+  const { animationParent } = React.useContext(AppContext);
+  const cartItems = useSelector((state: RootState) => state.cart.cartItems);
+  const dispatch = useAppDispatch();
 
   const [isOrderCompleted, setIsOrderCompleted] = React.useState<boolean>(false);
 	const [orderId, setOrderId] = React.useState<number>(0);
-
-  const onRemoveItem = (obj: IProduct) => {
-    setCartItems((prev) => prev.filter((item) => item.id !== obj.id));
-  };
 
   const createOrder = React.useCallback(async () => {
     try {
@@ -32,7 +31,7 @@ export const Drawer: React.FC<IDrawerProps> = (props) => {
           total: props.cartTotalPrice
         }
       );
-      setCartItems([]);
+      dispatch(clearCart());
       setIsOrderCompleted(true);
 			setOrderId(data.id);
       return data;
@@ -56,7 +55,7 @@ export const Drawer: React.FC<IDrawerProps> = (props) => {
         </div>
 
         {cartItems.length > 0 ? (
-          <>
+          <>          
             <div ref={animationParent} className="drawer-cart__list">
               {cartItems.map((obj) => (
                 <CartItem
@@ -64,7 +63,8 @@ export const Drawer: React.FC<IDrawerProps> = (props) => {
                   title={obj.title}
                   price={obj.price}
                   imageUrl={obj.imageUrl}
-                  onRemove={() => onRemoveItem(obj)}
+                  onRemove={() => dispatch(removeFromCart(obj))
+                  }
                 />
               ))}
             </div>

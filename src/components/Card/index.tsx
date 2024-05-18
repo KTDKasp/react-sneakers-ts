@@ -1,9 +1,10 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 
-import AppContext from '../../context';
+import { ICardProps } from './Card.props';
+import { RootState } from '../../redux/store';
 
 import './Card.css';
-import { ICardProps } from './Card.props';
 
 export const Card: React.FC<ICardProps> = ({
 	id,
@@ -15,8 +16,11 @@ export const Card: React.FC<ICardProps> = ({
 	onClickFavorite
 }) => {
 	const [isFavoriteCard, setIsFavoriteCard] = React.useState(isFavorite);
+	const cartItems = useSelector((state: RootState) => state.cart.cartItems);
 
-	const { isItemAdded } = React.useContext(AppContext);
+	const isItemAdded = (itemId: number) => {
+		return cartItems.some((obj) => obj.id === itemId);
+	};
 
 	const onClickAddBtn = () => {
 		if (onClickAdd) {
@@ -54,7 +58,7 @@ export const Card: React.FC<ICardProps> = ({
 					<img
 						onClick={() => onClickAddBtn()}
 						className="card__add"
-						src={isItemAdded && isItemAdded(id) ? '/svg/checked.svg' : '/svg/plus.svg'}
+						src={isItemAdded(id) ? '/svg/checked.svg' : '/svg/plus.svg'}
 						alt="Plus"
 					/>
 				)}

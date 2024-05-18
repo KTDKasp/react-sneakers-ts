@@ -13,28 +13,10 @@ import AppContext, { AppContextType } from './context';
 import './app.css';
 
 function App() {
-  const [cartItems, setCartItems] = React.useState<IProduct[]>(() => {
-    const localCartItems = localStorage.getItem('cart');
-		if (!localCartItems) {
-			return undefined;
-		}
-		return JSON.parse(localCartItems);
-  });
   const [favoriteItems, setFavoriteItems] = React.useState<IProduct[]>([]);
   const [items, setItems] = React.useState<IProduct[]>([]);
   const [drawerOpen, setDrawerOpen] = React.useState<boolean>(false);
   const [animationParent] = useAutoAnimate();
-
-	const onAddToCart = (obj: IProduct) => {
-    setCartItems((prev) => {
-			const isItemAdded = prev.find((item) => Number(item.id) === Number(obj.id));
-			if (isItemAdded) {
-				return prev.filter((item) => Number(item.id) !== Number(obj.id));
-			} else {
-				return [...prev, obj];
-			}
-		});
-  };
 	
   React.useEffect(() => {
 		try {
@@ -68,21 +50,13 @@ function App() {
 		}
 	};
 
-	const isItemAdded = (id: number) => {
-		return cartItems.some((obj) => Number(obj.id) === Number(id));
-	};
-
 	const context: AppContextType = {
 		items,
 		animationParent, 
-		cartItems, 
-		setCartItems, 
 		setItems, 
 		favoriteItems, 
 		setFavoriteItems,
 		onAddToFavotites,
-		onAddToCart,
-		isItemAdded,
 		setDrawerOpen,
 		drawerOpen
 	};
