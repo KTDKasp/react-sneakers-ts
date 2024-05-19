@@ -4,4 +4,5 @@ export interface ICardListProps {
 	items: IProduct[];
 	onAddToCart: (obj: IProduct) => void;
 	onAddToFavotites: (obj: IProduct) => void;
+	onRemoveFromFavorites: (obj: IProduct) => void;
 }

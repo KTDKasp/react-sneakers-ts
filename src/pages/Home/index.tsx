@@ -9,6 +9,7 @@ import { addToCart } from '../../redux/slices/cartSlice';
 import { useAppDispatch } from '../../redux/store';
 
 import './Home.css';
+import { addToFavotites, removeFromFavorites } from '../../redux/slices/favoritesSlice';
 
 interface ISearchParams {
 	sortBy: string;
@@ -18,7 +19,7 @@ interface ISearchParams {
 export const Home = () => {
 	const [sortType, setSortType] = React.useState<string>('title');
 	const [searchValue, setSearchValue] = React.useState<string>('');
-	const { items, setItems, onAddToFavotites } = React.useContext(AppContext);
+	const { items, setItems } = React.useContext(AppContext);
 	const dispatch = useAppDispatch();
 
 	const fetchData = React.useCallback(async () => {
@@ -96,7 +97,8 @@ export const Home = () => {
 				<CardList
 					items={items}
 					onAddToCart={(obj) => dispatch(addToCart(obj))}
-					onAddToFavotites={onAddToFavotites}
+					onAddToFavotites={(obj) => dispatch(addToFavotites(obj))}
+					onRemoveFromFavorites={(obj) => dispatch(removeFromFavorites(obj))}
 				/>
 			}
 		</div>

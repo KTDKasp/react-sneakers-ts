@@ -18,25 +18,32 @@ export const fetchFavorites = createAsyncThunk<IProduct[]>(
 	}
 );
 
-// #TODO: Допилить функционал добавления и удаления товара в избранное
+export const removeFromFavorites = createAsyncThunk<
+	IProduct,
+	IProduct,
+	{ state: RootState }
+>('favorites/removeFromFavorites', async (obj: IProduct, { getState }) => {
+	const isItemFavorite = getState().favorites.favoriteItems.find(
+		(item) => Number(item.itemId) === Number(obj.id)
+	);
+	if (isItemFavorite) {
+		await axios.delete(
+			`https://6d35450ae5876ee3.mokky.dev/favorites/${isItemFavorite.id}`
+		);
+		return obj;
+	} else {
+		return {} as IProduct;
+	}
+});
+
 export const addToFavotites = createAsyncThunk<
 	IProduct,
 	IProduct,
 	{ state: RootState }
->('favorites/addToFavotites', async (obj: IProduct, { getState, rejectWithValue }) => {
-	try {
-		const isItemFavorite = getState().favorites.favoriteItems.find(
-			(item) => Number(item.itemId) === Number(obj.id)
-		);
-		if (isItemFavorite) {
-			await axios.delete(
-				`https://6d35450ae5876ee3.mokky.dev/favorites/${isItemFavorite.id}`
-			);
-			getState().favorites.favoriteItems.filter(
-				(item) => Number(item.itemId) !== Number(obj.id)
-			);
-			return obj;
-		} else {
+>(
+	'favorites/addToFavotites',
+	async (obj: IProduct, { rejectWithValue }) => {
+		try {
 			const { data } = await axios.post<IProduct>(
 				'https://6d35450ae5876ee3.mokky.dev/favorites',
 				{
@@ -51,12 +58,12 @@ export const addToFavotites = createAsyncThunk<
 			} else {
 				return data;
 			}
+		} catch (error) {
+			console.log(error);
+			return rejectWithValue(error);
 		}
-	} catch (error) {
-		console.log(error);
-		return rejectWithValue(error);
 	}
-});
+);
 
 export interface IFavoritesState {
 	favoriteItems: IProduct[];
@@ -95,7 +102,16 @@ export const favoritesSlice = createSlice({
 			(state, action: PayloadAction<IProduct>) => {
 				state.favoriteItems.push(action.payload);
 			}
-		);
+		).addCase(addToFavotites.rejected, () => {
+			throw new Error('Failed to add item to favorites');
+		});
+		builder.addCase(removeFromFavorites.fulfilled, (state, action: PayloadAction<IProduct>) => {
+			state.favoriteItems = state.favoriteItems.filter(
+				(item) => Number(item.itemId) !== Number(action.payload?.id)
+			);
+		}).addCase(removeFromFavorites.rejected, () => {
+			throw new Error('Failed to remove item from favorites');
+		});
 	}
 });
 

@@ -7,12 +7,13 @@ import AppContext from '../../context';
 import { EmptyBlock } from '../../components/EmptyBlock';
 import { RootState, useAppDispatch } from '../../redux/store';
 import { useSelector } from 'react-redux';
-import { fetchFavorites } from '../../redux/slices/favoritesSlice';
+import { fetchFavorites, addToFavotites, removeFromFavorites } from '../../redux/slices/favoritesSlice';
+import { IProduct } from '../../interfaces/product.interface';
 
 import './Favorites.css';
 
 export const Favorites = () => {
-	const { animationParent, onAddToFavotites } = React.useContext(AppContext);
+	const { animationParent } = React.useContext(AppContext);
 	const favoriteItems = useSelector((state: RootState) => state.favorites.favoriteItems);
 	const dispatch = useAppDispatch();
 
@@ -22,6 +23,16 @@ export const Favorites = () => {
 		};
 		fetchData();
 	}, []);
+
+	// #TODO: постараться убрать этот костыль onClickOnFaviorite
+	const onClickOnFavorite = (obj: IProduct) => {
+		const isItemFavorite = favoriteItems.find((item) => Number(item.itemId) === Number(obj.id));
+		if (isItemFavorite) {
+			dispatch(removeFromFavorites(obj));
+		} else {
+			dispatch(addToFavotites(obj));
+		}
+	};
 
 	return (
 		<div className="favorites">
@@ -43,7 +54,7 @@ export const Favorites = () => {
 								key={item.id}
 								onClickAdd={(obj) => dispatch(addToCart(obj))}
 								isFavorite={true}
-								onClickFavorite={(obj) => onAddToFavotites(obj)}
+								onClickFavorite={(obj) => onClickOnFavorite(obj)}
 								id={item.itemId ?? 0}
 								price={item.price}
 								title={item.title}
