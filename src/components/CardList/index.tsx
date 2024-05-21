@@ -4,14 +4,22 @@ import { Card } from '../Card';
 import './CardList.css';
 import { ICardListProps } from './CardList.props';
 import { useSelector } from 'react-redux';
-import { RootState } from '../../redux/store';
+import { RootState, useAppDispatch } from '../../redux/store';
 import { IProduct } from '../../interfaces/product.interface';
 import { useAutoAnimate } from '@formkit/auto-animate/react';
+import { fetchFavorites } from '../../redux/slices/favoritesSlice';
 
 export const CardList: React.FC<ICardListProps> = ({ items, onAddToCart, onAddToFavotites, onRemoveFromFavorites }) => {
   const favoriteItems = useSelector((state: RootState) => state.favorites.favoriteItems);
+  const dispatch = useAppDispatch();
   const [animationParent] = useAutoAnimate();
 
+	React.useEffect(() => {
+		const fetchData = async () => {
+			dispatch(fetchFavorites());
+		};
+		fetchData();
+	}, []);
 
 	// #TODO: постараться убрать этот костыль onClickOnFaviorite
   const onClickOnFavorite = (obj: IProduct) => {
