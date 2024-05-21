@@ -3,7 +3,6 @@ import axios from 'axios';
 
 import { CartItem } from '../CartItem';
 import { Info } from '../Info';
-import AppContext from '../../context';
 
 import { IOrders } from '../../interfaces/orders.inteface';
 import { IDrawerProps } from './Drawer.props';
@@ -13,9 +12,10 @@ import './Drawer.css';
 import { useSelector } from 'react-redux';
 import { RootState, useAppDispatch } from '../../redux/store';
 import { clearCart, removeFromCart } from '../../redux/slices/cartSlice';
+import { useAutoAnimate } from '@formkit/auto-animate/react';
 
 export const Drawer: React.FC<IDrawerProps> = (props) => {
-  const { animationParent } = React.useContext(AppContext);
+  const [animationParent] = useAutoAnimate();
   const cartItems = useSelector((state: RootState) => state.cart.cartItems);
   const dispatch = useAppDispatch();
 

@@ -1,65 +1,45 @@
 import React from 'react';
-import axios from 'axios';
 import debounce from 'lodash.debounce';
 
-import AppContext from '../../context';
 import { CardList } from '../../components/CardList';
-import { IProduct } from '../../interfaces/product.interface';
 import { addToCart } from '../../redux/slices/cartSlice';
-import { useAppDispatch } from '../../redux/store';
+import { RootState, useAppDispatch } from '../../redux/store';
 
 import './Home.css';
 import { addToFavotites, removeFromFavorites } from '../../redux/slices/favoritesSlice';
-
-interface ISearchParams {
-	sortBy: string;
-	title?: string;
-}
+import { useSelector } from 'react-redux';
+import { fetchSneakers, setSearchValue, setSortType } from '../../redux/slices/sneakersItemsSlice';
 
 export const Home = () => {
-	const [sortType, setSortType] = React.useState<string>('title');
-	const [searchValue, setSearchValue] = React.useState<string>('');
-	const { items, setItems } = React.useContext(AppContext);
+	const [inputValue, setInputValue] = React.useState<string>('');
+	const items = useSelector((state: RootState) => state.sneakers.items);
+	const searchValue = useSelector((state: RootState) => state.sneakers.searchValue);
+	const sortType = useSelector((state: RootState) => state.sneakers.sortType);
 	const dispatch = useAppDispatch();
 
-	const fetchData = React.useCallback(async () => {
-		const params: ISearchParams = {
-			sortBy: sortType
-		};
-
-		if (searchValue) {
-			params.title = `*${searchValue}*`;
-		}
-
-		// #TODO: сделать скелетон не при каждом обновлении
-		try {
-			const { data } = await axios.get<IProduct[]>(
-				'https://6d35450ae5876ee3.mokky.dev/items',
-				{
-					params
-				}
-			);
-			if (setItems) {
-				setItems(data);
-			}
-		} catch (error) {
-			console.log(`Hey, you have ${error}`);
-		}
-	}, [searchValue, sortType]);
-
 	React.useEffect(() => {
-		async function onMount() {
-			await fetchData();
-		}
-		onMount();
-	}, [fetchData]);
+		dispatch(fetchSneakers({ searchValue, sortType }));
+	}, [searchValue, sortType, dispatch]);
+
+	const updateInputValue = React.useCallback(
+		debounce((str: string) => {
+			dispatch(setSearchValue(str));
+		}, 500),
+ [dispatch]);
+
+ const onClickClear = () => {
+	dispatch(setSearchValue(''));
+	setInputValue('');
+ };
+
 
 	const onChangeSelect = debounce((event: React.ChangeEvent<HTMLSelectElement>) => {
-		setSortType(event.target.value);
+		dispatch(setSortType(event.target.value));
 	}, 250);
 
 	const onChangeSearchInput = (event: React.ChangeEvent<HTMLInputElement>) => {
-		setSearchValue(event.target.value);
+		setInputValue(event.target.value);
+		updateInputValue(event.target.value);
 	};
 
 	return (
@@ -79,12 +59,12 @@ export const Home = () => {
 							className="search__input"
 							type="text"
 							placeholder="Поиск..."
-							value={searchValue}
+							value={inputValue}
 							onChange={(event) => onChangeSearchInput(event)}
 						/>
-						{searchValue && (
+						{inputValue && (
 							<img
-								onClick={() => setSearchValue('')}
+								onClick={onClickClear}
 								className="search__clear"
 								src="/svg/close.svg"
 								alt="Clear"

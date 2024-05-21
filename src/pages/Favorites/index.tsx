@@ -1,19 +1,20 @@
 import React from 'react';
+import { useAutoAnimate } from '@formkit/auto-animate/react';
+import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { Card } from '../../components/Card';
 
+import { Card } from '../../components/Card';
 import { addToCart } from '../../redux/slices/cartSlice';
-import AppContext from '../../context';
 import { EmptyBlock } from '../../components/EmptyBlock';
 import { RootState, useAppDispatch } from '../../redux/store';
-import { useSelector } from 'react-redux';
 import { fetchFavorites, addToFavotites, removeFromFavorites } from '../../redux/slices/favoritesSlice';
 import { IProduct } from '../../interfaces/product.interface';
 
 import './Favorites.css';
 
 export const Favorites = () => {
-	const { animationParent } = React.useContext(AppContext);
+	
+	const [animationParent] = useAutoAnimate();
 	const favoriteItems = useSelector((state: RootState) => state.favorites.favoriteItems);
 	const dispatch = useAppDispatch();
 

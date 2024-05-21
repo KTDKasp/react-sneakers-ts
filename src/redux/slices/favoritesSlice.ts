@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import type { PayloadAction } from '@reduxjs/toolkit';
+import { PayloadAction } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { IProduct } from '../../interfaces/product.interface';
 import { RootState } from '../store';
@@ -76,11 +76,7 @@ const initialState: IFavoritesState = {
 export const favoritesSlice = createSlice({
 	name: 'favorites',
 	initialState,
-	reducers: {
-		increment: (state) => {
-			state.favoriteItems = [];
-		}
-	},
+	reducers: {},
 	extraReducers: (builder) => {
 		builder
 			.addCase(fetchFavorites.pending, (state) => {
@@ -116,6 +112,5 @@ export const favoritesSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { increment } = favoritesSlice.actions;
 
 export default favoritesSlice.reducer;
