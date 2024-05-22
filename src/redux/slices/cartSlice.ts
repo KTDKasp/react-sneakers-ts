@@ -10,12 +10,14 @@ export interface ICartState {
   cartItems: IProduct[];
 	totalPrice: number;
 	salePrice: number;
+	drawerOpen: boolean;
 }
 
 const initialState: ICartState = {
 	totalPrice: totalPrice,
 	salePrice: salePrice,
-	cartItems: cartItems
+	cartItems: cartItems,
+	drawerOpen: false
 };
 
 export const cartSlice = createSlice({
@@ -47,11 +49,14 @@ export const cartSlice = createSlice({
 			state.cartItems = [];
 			state.totalPrice = 0;
 			state.salePrice = 0;
+		},
+		toggleDrawer: (state, action: PayloadAction<boolean>) => {
+			state.drawerOpen = action.payload;
 		}
   }
 });
 
 // Action creators are generated for each case reducer function
-export const { addToCart, removeFromCart, clearCart } = cartSlice.actions;
+export const { addToCart, removeFromCart, clearCart, toggleDrawer } = cartSlice.actions;
 
 export default cartSlice.reducer;

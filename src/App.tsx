@@ -5,21 +5,12 @@ import { MainLayout } from './layout/MainLayout';
 import { Home } from './pages/Home';
 import { Favorites } from './pages/Favorites';
 import { CartPage } from './pages/CartPage';
-import AppContext, { AppContextType } from './context';
 
 import './app.css';
 
-function App() {
-  const [drawerOpen, setDrawerOpen] = React.useState<boolean>(false);
-
-	const context: AppContextType = {
-		setDrawerOpen,
-		drawerOpen
-	};
-
+export const App: React.FC = () => {
   return (
     <div className="container">
-      <AppContext.Provider value={context}>
         <Routes>
           <Route path="/" element={<MainLayout />}>
             <Route index element={<Home />} />
@@ -27,9 +18,6 @@ function App() {
             <Route path="cart" element={<CartPage />} />
           </Route>
         </Routes>
-      </AppContext.Provider>
     </div>
   );
-}
-
-export default App;
+};

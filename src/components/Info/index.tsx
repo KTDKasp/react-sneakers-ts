@@ -1,12 +1,13 @@
 import React from 'react';
-import AppContext from '../../context';
 import { InfoProps } from './Info.props';
+import { useAppDispatch } from '../../redux/store';
+import { toggleDrawer } from '../../redux/slices/cartSlice';
 
 export const Info: React.FC<InfoProps> = ({ title, description, image, onClickClose }) => {
-  const { setDrawerOpen } = React.useContext(AppContext);
+  const dispatch = useAppDispatch();
 
   const onClickCloseInfo = () => {
-    setDrawerOpen(false);
+    dispatch(toggleDrawer(false));
     onClickClose();
   };
 

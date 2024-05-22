@@ -5,15 +5,26 @@ import { CardList } from '../../components/CardList';
 import { addToCart } from '../../redux/slices/cartSlice';
 import { RootState, useAppDispatch } from '../../redux/store';
 
-import './Home.css';
-import { addToFavotites, removeFromFavorites } from '../../redux/slices/favoritesSlice';
+import {
+	addToFavotites,
+	removeFromFavorites
+} from '../../redux/slices/favoritesSlice';
+
 import { useSelector } from 'react-redux';
-import { fetchSneakers, setSearchValue, setSortType } from '../../redux/slices/sneakersItemsSlice';
+import {
+	fetchSneakers,
+	setSearchValue,
+	setSortType
+} from '../../redux/slices/sneakersItemsSlice';
+
+import './Home.css';
 
 export const Home = () => {
 	const [inputValue, setInputValue] = React.useState<string>('');
 	const items = useSelector((state: RootState) => state.sneakers.items);
-	const searchValue = useSelector((state: RootState) => state.sneakers.searchValue);
+	const searchValue = useSelector(
+		(state: RootState) => state.sneakers.searchValue
+	);
 	const sortType = useSelector((state: RootState) => state.sneakers.sortType);
 	const dispatch = useAppDispatch();
 
@@ -25,17 +36,20 @@ export const Home = () => {
 		debounce((str: string) => {
 			dispatch(setSearchValue(str));
 		}, 500),
- [dispatch]);
+		[dispatch]
+	);
 
- const onClickClear = () => {
-	dispatch(setSearchValue(''));
-	setInputValue('');
- };
+	const onClickClear = () => {
+		dispatch(setSearchValue(''));
+		setInputValue('');
+	};
 
-
-	const onChangeSelect = debounce((event: React.ChangeEvent<HTMLSelectElement>) => {
-		dispatch(setSortType(event.target.value));
-	}, 250);
+	const onChangeSelect = debounce(
+		(event: React.ChangeEvent<HTMLSelectElement>) => {
+			dispatch(setSortType(event.target.value));
+		},
+		250
+	);
 
 	const onChangeSearchInput = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setInputValue(event.target.value);

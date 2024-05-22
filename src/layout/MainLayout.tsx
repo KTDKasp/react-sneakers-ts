@@ -2,15 +2,16 @@ import React from 'react';
 import { Outlet } from 'react-router-dom';
 import { Header } from '../components/Header';
 import { Drawer } from '../components/Drawer';
-import AppContext from '../context';
 import { useSelector } from 'react-redux';
-import { RootState } from '../redux/store';
+import { RootState, useAppDispatch } from '../redux/store';
+import { toggleDrawer } from '../redux/slices/cartSlice';
 
 export const MainLayout = () => {
-  const { drawerOpen, setDrawerOpen } = React.useContext(AppContext);
   const cartItems = useSelector((state: RootState) => state.cart.cartItems);
   const totalPrice = useSelector((state: RootState) => state.cart.totalPrice);
   const salePrice = useSelector((state: RootState) => state.cart.salePrice);
+  const drawerOpen = useSelector((state: RootState) => state.cart.drawerOpen);
+  const dispatch = useAppDispatch();
 
   React.useEffect(() => {
     localStorage.setItem('cart', JSON.stringify(cartItems));
@@ -22,12 +23,12 @@ export const MainLayout = () => {
         <Drawer
           cartTotalPrice={totalPrice}
           cartSalePrice={salePrice}
-          onClickClose={() => setDrawerOpen(false)}
+          onClickClose={() => dispatch(toggleDrawer(false))}
         />
       )}
       <Header
         cartTotalPrice={totalPrice}
-        onClickOpenDrawer={() => setDrawerOpen(true)}
+        onClickOpenDrawer={() => dispatch(toggleDrawer(true))}
       />
       <div className="content">
         <Outlet />

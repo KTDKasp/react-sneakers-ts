@@ -32,6 +32,7 @@ export const removeFromFavorites = createAsyncThunk<
 		);
 		return obj;
 	} else {
+		// #TODO: постараться убрать этот костыль
 		return {} as IProduct;
 	}
 });
@@ -102,10 +103,9 @@ export const favoritesSlice = createSlice({
 			throw new Error('Failed to add item to favorites');
 		});
 		builder.addCase(removeFromFavorites.fulfilled, (state, action: PayloadAction<IProduct>) => {
-			state.favoriteItems = state.favoriteItems.filter(
-				(item) => Number(item.itemId) !== Number(action.payload?.id)
-			);
-		}).addCase(removeFromFavorites.rejected, () => {
+			state.favoriteItems = state.favoriteItems.filter((item) => item.itemId !== action.payload.id);
+		})
+		.addCase(removeFromFavorites.rejected, () => {
 			throw new Error('Failed to remove item from favorites');
 		});
 	}

@@ -19,7 +19,7 @@ export const CardList: React.FC<ICardListProps> = ({ items, onAddToCart, onAddTo
 			dispatch(fetchFavorites());
 		};
 		fetchData();
-	}, []);
+	}, [dispatch]);
 
 	// #TODO: постараться убрать этот костыль onClickOnFaviorite
   const onClickOnFavorite = (obj: IProduct) => {
