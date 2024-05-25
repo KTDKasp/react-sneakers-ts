@@ -6,7 +6,7 @@ import { Home } from './pages/Home';
 import { Favorites } from './pages/Favorites';
 import { CartPage } from './pages/CartPage';
 
-import './app.css';
+import './App.css';
 
 export const App: React.FC = () => {
   return (

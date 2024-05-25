@@ -68,10 +68,12 @@ export const addToFavotites = createAsyncThunk<
 
 export interface IFavoritesState {
 	favoriteItems: IProduct[];
+	status: string;
 }
 
 const initialState: IFavoritesState = {
-	favoriteItems: []
+	favoriteItems: [],
+	status: 'loading'
 };
 
 export const favoritesSlice = createSlice({
@@ -82,14 +84,17 @@ export const favoritesSlice = createSlice({
 		builder
 			.addCase(fetchFavorites.pending, (state) => {
 				state.favoriteItems = [];
+				state.status = 'loading';
 			})
 			.addCase(
 				fetchFavorites.fulfilled,
 				(state, action: PayloadAction<IProduct[]>) => {
+					state.status = 'ok';
 					state.favoriteItems = action.payload;
 				}
 			)
 			.addCase(fetchFavorites.rejected, (state) => {
+				state.status = 'error';
 				state.favoriteItems = [];
 				throw new Error('Failed to fetch favorites items');
 			});
