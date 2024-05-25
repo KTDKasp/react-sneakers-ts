@@ -1,5 +1,4 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { PayloadAction } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { IProduct } from '../../interfaces/product.interface';
 import { RootState } from '../store';
@@ -19,11 +18,10 @@ export const fetchFavorites = createAsyncThunk<IProduct[]>(
 );
 
 export const removeFromFavorites = createAsyncThunk<
-  IProduct,
-  IProduct,
-  { state: RootState }
->('favorites/removeFromFavorites', async (obj: IProduct, { getState }) => {
-  const isItemFavorite = getState().favorites.favoriteItems.find(
+  IProduct | undefined,
+  IProduct
+>('favorites/removeFromFavorites', async (obj, { getState }) => {
+  const isItemFavorite = (getState() as RootState).favorites.favoriteItems.find(
     (item) => Number(item.itemId) === Number(obj.id)
   );
   if (isItemFavorite) {
@@ -31,9 +29,6 @@ export const removeFromFavorites = createAsyncThunk<
       `https://6d35450ae5876ee3.mokky.dev/favorites/${isItemFavorite.id}`
     );
     return obj;
-  } else {
-    // #TODO: постараться убрать этот костыль
-    return {} as IProduct;
   }
 });
 
@@ -80,7 +75,7 @@ export const favoritesSlice = createSlice({
       })
       .addCase(
         fetchFavorites.fulfilled,
-        (state, action: PayloadAction<IProduct[]>) => {
+        (state, action) => {
           state.status = 'ok';
           state.favoriteItems = action.payload;
         }
@@ -94,7 +89,7 @@ export const favoritesSlice = createSlice({
     builder
       .addCase(
         addToFavotites.fulfilled,
-        (state, action: PayloadAction<IProduct>) => {
+        (state, action) => {
           state.favoriteItems.push(action.payload);
         }
       )
@@ -104,10 +99,10 @@ export const favoritesSlice = createSlice({
     builder
       .addCase(
         removeFromFavorites.fulfilled,
-        (state, action: PayloadAction<IProduct>) => {
-          state.favoriteItems = state.favoriteItems.filter(
-            (item) => item.itemId !== action.payload.id
-          );
+        (state, action) => {
+						state.favoriteItems = state.favoriteItems.filter(
+							(item) => item.itemId !== action.payload?.id
+						);
         }
       )
       .addCase(removeFromFavorites.rejected, () => {
