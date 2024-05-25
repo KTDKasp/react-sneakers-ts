@@ -1,43 +1,27 @@
 import React from 'react';
-import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { Card } from '../../components/Card';
 import { EmptyBlock } from '../../components/EmptyBlock';
 
-import { IProduct } from '../../interfaces/product.interface';
-import { IOrders } from '../../interfaces/orders.inteface';
 import './CartPage.css';
+import { useSelector } from 'react-redux';
+import { RootState, useAppDispatch } from '../../redux/store';
+import { deleteAllOrders, fetchOrders } from '../../redux/slices/orderSlice';
 
 export const CartPage = () => {
-	const [orders, setOrders] = React.useState<IProduct[]>([]);
+	const orders = useSelector((state: RootState) => state.orders.orders);
+	const dispatch = useAppDispatch();
 
 	const onClickCancel = async () => {
 		const res = confirm('Вы действительно хотите удалить заказы?');
 		if (res) {
-      try {
-        const { data } = await axios.patch<IOrders>('https://6d35450ae5876ee3.mokky.dev/orders', []);
-        setOrders([]);
-        return data;
-      } catch (error) {
-        console.log(error);
-      }
+			dispatch(deleteAllOrders());
 		}
 	};
 
 	React.useEffect(() => {
-		async function fetchOrders() {
-			try {
-				const { data } = await axios.get<IOrders[]>(
-					'https://6d35450ae5876ee3.mokky.dev/orders'
-				);
-				setOrders(data.map((obj) => obj.items).flat());
-			} catch (error) {
-				console.log(error);
-			}
-		}
-
-		fetchOrders();
-	}, []);
+		dispatch(fetchOrders());
+	}, [dispatch]);
 
 	return (
 		<div className="cart">

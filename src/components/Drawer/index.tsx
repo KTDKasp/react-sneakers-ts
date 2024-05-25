@@ -1,10 +1,8 @@
 import React from 'react';
-import axios from 'axios';
 
 import { CartItem } from '../CartItem';
 import { Info } from '../Info';
 
-import { IOrders } from '../../interfaces/orders.inteface';
 import { IDrawerProps } from './Drawer.props';
 
 import arrowClose from '/svg/arrow-next-drawer.svg';
@@ -13,32 +11,26 @@ import { useSelector } from 'react-redux';
 import { RootState, useAppDispatch } from '../../redux/store';
 import { clearCart, removeFromCart } from '../../redux/slices/cartSlice';
 import { useAutoAnimate } from '@formkit/auto-animate/react';
+import { createOrder, setOrderCompleted } from '../../redux/slices/orderSlice';
+import { IProduct } from '../../interfaces/product.interface';
+
+export interface PostData {
+  items: IProduct[];
+  total: number;
+}
 
 export const Drawer: React.FC<IDrawerProps> = (props) => {
   const [animationParent] = useAutoAnimate();
   const cartItems = useSelector((state: RootState) => state.cart.cartItems);
+  const isOrderCompleted = useSelector((state: RootState) => state.orders.isOrderCompleted);
+  const orderId = useSelector((state: RootState) => state.orders.orderId);
   const dispatch = useAppDispatch();
 
-  const [isOrderCompleted, setIsOrderCompleted] = React.useState<boolean>(false);
-	const [orderId, setOrderId] = React.useState<number>(0);
-
-  const createOrder = React.useCallback(async () => {
-    try {
-      const { data } = await axios.post<IOrders>(
-        'https://6d35450ae5876ee3.mokky.dev/orders',
-        {
-          items: cartItems,
-          total: props.cartTotalPrice
-        }
-      );
+  const createOrderHandler = React.useCallback(async () => {
+      dispatch(createOrder({ items: cartItems, total: props.cartTotalPrice }));
       dispatch(clearCart());
-      setIsOrderCompleted(true);
-			setOrderId(data.id);
-      return data;
-    } catch (e) {
-      console.log(e);
-    }
-  }, []);
+      dispatch(setOrderCompleted(true));
+  }, [dispatch, cartItems, props.cartTotalPrice]);
 
   return (
     <>
@@ -83,7 +75,7 @@ export const Drawer: React.FC<IDrawerProps> = (props) => {
             </div>
 
             <button
-              onClick={() => createOrder()}
+              onClick={() => createOrderHandler()}
               className="button_green"
               disabled={!cartItems.length ? true : false}
             >
@@ -103,7 +95,7 @@ export const Drawer: React.FC<IDrawerProps> = (props) => {
                 ? '/png/order-success-icon.png'
                 : '/png/package-icon.png'
             }
-            onClickClose={() => setIsOrderCompleted(false)}
+            onClickClose={() => dispatch(setOrderCompleted(false))}
           />
         )}
       </div>
